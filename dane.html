@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daň z nemovitosti – Hradec Králové 2025</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="stylesheet.css" />
+  </head>
+  <body>
+    <!-- HERO -->
+    <header class="hero">
+      <div class="hero-badge">Hradec Králové · 2025</div>
+      <h1>Daň z <em>nemovitosti</em></h1>
+      <p>
+        Orientační kalkulačka daně z nemovitých věcí dle sazeb a koeficientů
+        platných v Hradci Králové pro rok 2025.
+      </p>
+    </header>
+    <div class="wave"></div>
+
+    <main class="container">
+      <!-- KROK 1 – typ nemovitosti -->
+      <div class="step-label">
+        <div class="step-num">1</div>
+        <div class="step-title">Vyberte typ nemovitosti</div>
+      </div>
+
+      <div class="type-grid" id="typeGrid">
+        <button
+          class="type-btn active"
+          data-type="byt"
+          onclick="selectType(this)"
+        >
+          <span class="type-icon">🏢</span>
+          <span class="type-name">Byt / jednotka</span>
+        </button>
+        <button
+          class="type-btn"
+          data-type="rodinny_dum"
+          onclick="selectType(this)"
+        >
+          <span class="type-icon">🏡</span>
+          <span class="type-name">Rodinný dům</span>
+        </button>
+        <button
+          class="type-btn"
+          data-type="bytovy_dum"
+          onclick="selectType(this)"
+        >
+          <span class="type-icon">🏘️</span>
+          <span class="type-name">Bytový dům</span>
+        </button>
+        <button class="type-btn" data-type="garaz" onclick="selectType(this)">
+          <span class="type-icon">🚗</span>
+          <span class="type-name">Garáž</span>
+        </button>
+        <button
+          class="type-btn"
+          data-type="rekreace"
+          onclick="selectType(this)"
+        >
+          <span class="type-icon">🌲</span>
+          <span class="type-name">Rekreační stavba</span>
+        </button>
+        <button
+          class="type-btn"
+          data-type="podnikani"
+          onclick="selectType(this)"
+        >
+          <span class="type-icon">🏭</span>
+          <span class="type-name">Stavba k podnikání</span>
+        </button>
+        <button
+          class="type-btn"
+          data-type="stavebni_pozemek"
+          onclick="selectType(this)"
+        >
+          <span class="type-icon">📐</span>
+          <span class="type-name">Stavební pozemek</span>
+        </button>
+        <button class="type-btn" data-type="zahrada" onclick="selectType(this)">
+          <span class="type-icon">🌱</span>
+          <span class="type-name">Zahrada / orná půda</span>
+        </button>
+      </div>
+
+      <!-- KROK 2 – vstupní data -->
+      <div class="step-label">
+        <div class="step-num">2</div>
+        <div class="step-title">Zadejte parametry</div>
+      </div>
+
+      <div class="input-section">
+        <div class="input-grid">
+          <div class="form-group">
+            <label id="vymeraLabel">Výměra / zastavěná plocha</label>
+            <div class="input-unit">
+              <input
+                type="number"
+                id="vymera"
+                min="1"
+                step="1"
+                value="70"
+                oninput="calculate()"
+                placeholder="70"
+              />
+              <span>m²</span>
+            </div>
+          </div>
+
+          <div class="form-group" id="podlaziGroup">
+            <label>Počet dalších nadzemních podlaží</label>
+            <select id="podlazi" onchange="calculate()">
+              <option value="0">Jen přízemí (žádné další)</option>
+              <option value="1">1 další nadzemní podlaží</option>
+              <option value="2">2 další nadzemní podlaží</option>
+              <option value="3">3 a více dalších podlaží</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="podilPozemkuGroup" style="display: none">
+            <label>Podíl na pozemku</label>
+            <select id="podilPozemku" onchange="calculate()">
+              <option value="1.22">Ano – součástí je podíl na pozemku</option>
+              <option value="1.2">Ne – bez podílu na pozemku</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- KROK 3 – výsledek -->
+      <div class="step-label">
+        <div class="step-num">3</div>
+        <div class="step-title">Výsledná daň</div>
+      </div>
+
+      <div class="result-card">
+        <div class="result-top">
+          <div>
+            <div class="result-label">Odhadovaná roční daň</div>
+            <div class="result-amount" id="resultAmount">—</div>
+          </div>
+          <div class="result-type-badge" id="resultBadge">—</div>
+        </div>
+
+        <div class="breakdown" id="breakdown"></div>
+
+        <div class="info-block">
+          <strong>Sazby pro Hradec Králové 2025:</strong> základní koeficient
+          <strong>4,5</strong> (nad 50 000 obyvatel), místní koeficient
+          <strong>3</strong> pro obytné stavby a stavební pozemky ·
+          <strong>1,5</strong> pro garáže, rekreační stavby a podnikání.
+          Přirážka za nadzemní podlaží +1,40 Kč/m². Výsledek je orientační –
+          přesnou výši stanovuje finanční úřad.
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>Kalkulačka daně z nemovitých věcí · Hradec Králové 2025</p>
+      <p>
+        Zákon č. 338/1992 Sb. · Vyhláška MmHK o místním koeficientu ·
+        <a href="https://www.financnisprava.cz" target="_blank"
+          >Finanční správa ČR</a
+        >
+      </p>
+    </footer>
+
+    <script>
+      let currentType = "byt";
+
+      const types = {
+        byt: {
+          label: "Byt / jednotka",
+          sazba: 3.5,
+          zakladKoef: 4.5,
+          misKoef: 3.0,
+          jePozemek: false,
+          jeJednotka: true,
+        },
+        rodinny_dum: {
+          label: "Rodinný dům",
+          sazba: 3.5,
+          zakladKoef: 4.5,
+          misKoef: 3.0,
+          jePozemek: false,
+          jeJednotka: false,
+        },
+        bytovy_dum: {
+          label: "Bytový dům",
+          sazba: 3.5,
+          zakladKoef: 4.5,
+          misKoef: 3.0,
+          jePozemek: false,
+          jeJednotka: false,
+        },
+        garaz: {
+          label: "Garáž",
+          sazba: 14.5,
+          zakladKoef: 1.0,
+          misKoef: 1.5,
+          jePozemek: false,
+          jeJednotka: false,
+        },
+        rekreace: {
+          label: "Rekreační stavba",
+          sazba: 6.0,
+          zakladKoef: 1.0,
+          misKoef: 1.5,
+          jePozemek: false,
+          jeJednotka: false,
+        },
+        podnikani: {
+          label: "Stavba k podnikání",
+          sazba: 10.0,
+          zakladKoef: 1.0,
+          misKoef: 1.5,
+          jePozemek: false,
+          jeJednotka: false,
+        },
+        stavebni_pozemek: {
+          label: "Stavební pozemek",
+          sazba: 3.5,
+          zakladKoef: 4.5,
+          misKoef: 3.0,
+          jePozemek: true,
+          jeJednotka: false,
+        },
+        zahrada: {
+          label: "Zahrada / orná půda",
+          sazba: 0.54,
+          zakladKoef: 1.0,
+          misKoef: 1.0,
+          jePozemek: true,
+          jeJednotka: false,
+          fixni: true,
+        },
+      };
+
+      function selectType(el) {
+        document
+          .querySelectorAll(".type-btn")
+          .forEach((b) => b.classList.remove("active"));
+        el.classList.add("active");
+        currentType = el.dataset.type;
+        const t = types[currentType];
+
+        const podlaziGroup = document.getElementById("podlaziGroup");
+        const podilGroup = document.getElementById("podilPozemkuGroup");
+        const vymeraLabel = document.getElementById("vymeraLabel");
+
+        if (t.jePozemek) {
+          podlaziGroup.style.display = "none";
+          podilGroup.style.display = "none";
+          vymeraLabel.textContent = "Výměra pozemku";
+        } else if (t.jeJednotka) {
+          podlaziGroup.style.display = "none";
+          podilGroup.style.display = "";
+          vymeraLabel.textContent = "Podlahová plocha";
+        } else {
+          podlaziGroup.style.display = "";
+          podilGroup.style.display = "none";
+          vymeraLabel.textContent = "Zastavěná plocha";
+        }
+        calculate();
+      }
+
+      function fmt(n) {
+        return n.toLocaleString("cs-CZ") + " Kč";
+      }
+
+      function calculate() {
+        const t = types[currentType];
+        const vymera = parseFloat(document.getElementById("vymera").value) || 0;
+        const amtEl = document.getElementById("resultAmount");
+
+        if (vymera <= 0) {
+          amtEl.textContent = "—";
+          document.getElementById("resultBadge").textContent = t.label;
+          document.getElementById("breakdown").innerHTML = "";
+          return;
+        }
+
+        amtEl.classList.add("updating");
+
+        let zakladDane,
+          sazbaDane,
+          poznamka = "";
+
+        if (t.fixni) {
+          zakladDane = vymera;
+          sazbaDane = t.sazba;
+        } else if (t.jeJednotka) {
+          const koefJ = parseFloat(
+            document.getElementById("podilPozemku").value,
+          );
+          zakladDane = Math.ceil(vymera * koefJ);
+          sazbaDane = t.sazba;
+          poznamka = `${vymera} m² × ${koefJ} = ${zakladDane} m²`;
+        } else {
+          const podlazi = parseInt(document.getElementById("podlazi").value);
+          sazbaDane = t.sazba + podlazi * 1.4;
+          zakladDane = vymera;
+          if (podlazi > 0)
+            poznamka = `Sazba navýšena o ${podlazi} × 1,40 Kč/m² za podlaží`;
+        }
+
+        const danZaklad = Math.ceil(zakladDane * sazbaDane);
+        const danPoZaklKoef = t.fixni
+          ? danZaklad
+          : Math.ceil(danZaklad * t.zakladKoef);
+        const danPoMist = t.fixni
+          ? danZaklad
+          : Math.ceil(danPoZaklKoef * t.misKoef);
+        const celkem = danPoMist;
+
+        setTimeout(() => {
+          amtEl.classList.remove("updating");
+          amtEl.innerHTML =
+            celkem.toLocaleString("cs-CZ") + "<span>Kč / rok</span>";
+          document.getElementById("resultBadge").textContent = t.label;
+
+          let bd = "";
+          const arrow = '<span class="breakdown-arrow">→</span>';
+
+          if (t.jeJednotka) {
+            bd += row(
+              `Základ daně (${vymera} m² × ${parseFloat(document.getElementById("podilPozemku").value)})`,
+              zakladDane + " m²",
+            );
+          } else {
+            bd += row("Výměra", vymera + " m²");
+          }
+
+          bd += row("Sazba daně", sazbaDane.toFixed(2) + " Kč/m²");
+          bd += row("Daň před koeficienty", fmt(danZaklad));
+
+          if (!t.fixni && t.zakladKoef !== 1.0) {
+            bd += row(
+              `Základní koeficient (×${t.zakladKoef}) – nad 50 000 obyv.`,
+              fmt(danPoZaklKoef),
+            );
+          }
+          if (!t.fixni && t.misKoef !== 1.0) {
+            bd += row(
+              `Místní koeficient (×${t.misKoef}) – vyhláška MmHK`,
+              fmt(danPoMist),
+            );
+          }
+
+          bd += rowTotal("Celková roční daň", fmt(celkem));
+          if (poznamka)
+            bd += `<div style="margin-top:10px; font-size:12px; color:rgba(255,255,255,0.35);">${poznamka}</div>`;
+
+          document.getElementById("breakdown").innerHTML = bd;
+        }, 80);
+      }
+
+      function row(label, val) {
+        return `<div class="breakdown-row"><span>${label}</span><span class="val">${val}</span></div>`;
+      }
+      function rowTotal(label, val) {
+        return `<div class="breakdown-row total"><span>${label}</span><span class="val">${val}</span></div>`;
+      }
+
+      calculate();
+    </script>
+  </body>
+</html>
